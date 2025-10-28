@@ -1,0 +1,143 @@
+backend:
+  name: github
+  repo: facusada/blog-danza
+  branch: main
+  auth_scope: repo
+  squash_merges: true
+media_folder: public/uploads
+public_folder: /uploads
+locale: es
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: '-'
+collections:
+  - name: productions
+    label: Producciones
+    folder: content/productions
+    create: true
+    identifier_field: title
+    slug: "{{slug}}"
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: slug, label: Slug, widget: string }
+      - { name: year, label: Año, widget: number }
+      - { name: duration, label: Duración, widget: string, required: false }
+      - { name: synopsis, label: Sinopsis, widget: text }
+      - name: crew
+        label: Equipo creativo
+        widget: list
+        fields:
+          - { name: role, label: Rol, widget: string }
+          - { name: name, label: Nombre, widget: string }
+      - { name: cover, label: Imagen de portada, widget: image, allow_multiple: false }
+      - name: gallery
+        label: Galería
+        widget: list
+        fields:
+          - { name: src, label: Imagen, widget: image }
+          - { name: alt, label: Texto alternativo, widget: string }
+      - { name: youtubeId, label: ID de YouTube, widget: string, required: false }
+      - { name: tags, label: Etiquetas, widget: list, allow_add: true, required: false }
+  - name: events
+    label: Funciones
+    folder: content/events
+    create: true
+    identifier_field: title
+    slug: "{{slug}}"
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: slug, label: Slug, widget: string }
+      - { name: date, label: Fecha, widget: datetime, time_format: false }
+      - name: venueSlug
+        label: Teatro
+        widget: relation
+        collection: venues
+        search_fields: [name, city]
+        value_field: slug
+        display_fields: [name]
+      - name: city
+        label: Ciudad
+        widget: string
+      - name: country
+        label: País
+        widget: string
+      - name: productionSlug
+        label: Producción
+        widget: relation
+        collection: productions
+        search_fields: [title]
+        value_field: slug
+        display_fields: [title]
+      - { name: flyer, label: Flyer, widget: image, required: false }
+      - name: gallery
+        label: Galería
+        widget: list
+        fields:
+          - { name: src, label: Imagen, widget: image }
+          - { name: alt, label: Texto alternativo, widget: string }
+      - name: pressLinks
+        label: Prensa
+        widget: list
+        allow_add: true
+        fields:
+          - { name: label, label: Medio, widget: string }
+          - { name: url, label: Enlace, widget: string }
+  - name: venues
+    label: Teatros
+    folder: content/venues
+    create: true
+    identifier_field: name
+    slug: "{{slug}}"
+    fields:
+      - { name: name, label: Nombre, widget: string }
+      - { name: slug, label: Slug, widget: string }
+      - { name: address, label: Dirección, widget: string }
+      - { name: city, label: Ciudad, widget: string }
+      - { name: country, label: País, widget: string }
+      - { name: lat, label: Latitud, widget: number, required: false }
+      - { name: lon, label: Longitud, widget: number, required: false }
+      - name: photos
+        label: Fotografías
+        widget: list
+        fields:
+          - { name: src, label: Imagen, widget: image }
+          - { name: alt, label: Texto alternativo, widget: string }
+  - name: press
+    label: Prensa
+    folder: content/press
+    create: true
+    identifier_field: outlet
+    slug: "{{slug}}"
+    fields:
+      - { name: outlet, label: Medio, widget: string }
+      - { name: author, label: Autor/a, widget: string }
+      - { name: date, label: Fecha, widget: datetime, time_format: false }
+      - { name: url, label: URL, widget: string }
+      - { name: excerpt, label: Copete, widget: text }
+      - name: relatedProductionSlug
+        label: Producción relacionada
+        widget: relation
+        collection: productions
+        search_fields: [title]
+        value_field: slug
+        display_fields: [title]
+        required: false
+  - name: people
+    label: Equipo
+    folder: content/people
+    create: true
+    identifier_field: name
+    slug: "{{slug}}"
+    fields:
+      - { name: name, label: Nombre, widget: string }
+      - { name: role, label: Rol, widget: string }
+      - { name: bio, label: Bio, widget: text }
+      - { name: photo, label: Foto, widget: image }
+      - name: links
+        label: Enlaces
+        widget: list
+        required: false
+        fields:
+          - { name: label, label: Etiqueta, widget: string }
+          - { name: url, label: URL, widget: string }
