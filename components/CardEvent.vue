@@ -2,9 +2,9 @@
   <article class="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
     <NuxtLink :to="`/events/${event.slug}`" class="flex flex-col gap-4">
       <img
-        v-if="event.flyer"
-        :src="event.flyer"
-        :alt="`Flyer de ${event.title}`"
+        v-if="primaryImage"
+        :src="primaryImage"
+        :alt="primaryAlt"
         class="h-40 w-full rounded-lg object-cover"
         loading="lazy"
       />
@@ -34,6 +34,7 @@ interface EventCard {
   productionSlug?: string;
   productionTitle?: string;
   flyer?: string;
+  gallery?: Array<{ src: string; alt?: string }>;
 }
 
 const props = defineProps<{ event: EventCard }>();
@@ -44,5 +45,19 @@ const formattedDate = computed(() => {
   } catch (error) {
     return props.event.date;
   }
+});
+
+const primaryImage = computed(() => {
+  if (props.event.flyer) {
+    return props.event.flyer;
+  }
+  return props.event.gallery?.[0]?.src ?? '';
+});
+
+const primaryAlt = computed(() => {
+  if (props.event.flyer) {
+    return `Flyer de ${props.event.title}`;
+  }
+  return props.event.gallery?.[0]?.alt || `Imagen de ${props.event.title}`;
 });
 </script>

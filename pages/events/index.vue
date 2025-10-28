@@ -17,7 +17,7 @@
     />
 
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-      <CardEvent v-for="event in paginatedItems" :key="event._id" :event="event" />
+      <CardEvent v-for="event in paginatedItems" :key="event.slug" :event="event" />
     </div>
 
     <nav class="flex items-center justify-between gap-4">
@@ -44,10 +44,17 @@
 
 <script setup lang="ts">
 const { data: eventsData } = await useAsyncData('events-list', () =>
-  queryContent('events').sort({ date: -1 }).find()
+  queryCollection('events')
+    .select('title', 'slug', 'date', 'venueSlug', 'city', 'country', 'productionSlug', 'flyer', 'gallery')
+    .order('date', 'DESC')
+    .all()
 );
-const { data: venuesData } = await useAsyncData('events-venues', () => queryContent('venues').find());
-const { data: productionsData } = await useAsyncData('events-productions', () => queryContent('productions').find());
+const { data: venuesData } = await useAsyncData('events-venues', () =>
+  queryCollection('venues').select('slug', 'name', 'city').all()
+);
+const { data: productionsData } = await useAsyncData('events-productions', () =>
+  queryCollection('productions').select('slug', 'title').all()
+);
 
 const venuesMap = computed(() => {
   return (venuesData.value ?? []).reduce<Record<string, any>>((acc, venue) => {

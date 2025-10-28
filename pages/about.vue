@@ -29,7 +29,7 @@
       <div class="grid gap-6 sm:grid-cols-2">
         <article
           v-for="person in team"
-          :key="person._id"
+          :key="person.name"
           class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900"
         >
           <img
@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 const { data: people } = await useAsyncData('people-list', () =>
-  queryContent('people').sort({ name: 1 }).find()
+  queryCollection('people').select('name', 'role', 'bio', 'photo', 'links').order('name', 'ASC').all()
 );
 
 const team = computed(() => people.value ?? []);

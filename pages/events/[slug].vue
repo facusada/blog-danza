@@ -51,7 +51,7 @@ const route = useRoute();
 const slug = route.params.slug as string;
 
 const { data: event } = await useAsyncData(`event-${slug}`, () =>
-  queryContent('events').where({ slug }).findOne()
+  queryCollection('events').where('slug', '=', slug).first()
 );
 
 if (!event.value) {
@@ -59,11 +59,11 @@ if (!event.value) {
 }
 
 const { data: venue } = await useAsyncData(`event-venue-${event.value.venueSlug}`, () =>
-  queryContent('venues').where({ slug: event.value?.venueSlug }).findOne()
+  queryCollection('venues').where('slug', '=', event.value?.venueSlug || '').first()
 );
 
 const { data: production } = await useAsyncData(`event-production-${event.value.productionSlug}`, () =>
-  queryContent('productions').where({ slug: event.value?.productionSlug }).findOne()
+  queryCollection('productions').where('slug', '=', event.value?.productionSlug || '').first()
 );
 
 const formattedDate = computed(() => {

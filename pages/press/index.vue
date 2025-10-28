@@ -8,14 +8,17 @@
     </header>
 
     <div class="grid gap-6 md:grid-cols-2">
-      <PressItem v-for="item in pressItems" :key="item._id" :press="item" />
+      <PressItem v-for="item in pressItems" :key="item.slug" :press="item" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 const { data: press } = await useAsyncData('press-list', () =>
-  queryContent('press').sort({ date: -1 }).find()
+  queryCollection('press')
+    .select('slug', 'outlet', 'author', 'date', 'url', 'excerpt', 'relatedProductionSlug')
+    .order('date', 'DESC')
+    .all()
 );
 
 const pressItems = computed(() => press.value ?? []);

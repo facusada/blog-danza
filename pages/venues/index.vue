@@ -19,7 +19,7 @@
     <div class="grid gap-6 md:grid-cols-2">
       <article
         v-for="venue in paginatedItems"
-        :key="venue._id"
+        :key="venue.slug"
         class="flex flex-col gap-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition hover:shadow-md dark:border-gray-800 dark:bg-gray-900"
       >
         <img
@@ -65,8 +65,14 @@
 </template>
 
 <script setup lang="ts">
-const { data: venuesData } = await useAsyncData('venues-list', () => queryContent('venues').find());
-const { data: eventsData } = await useAsyncData('venues-events', () => queryContent('events').find());
+const { data: venuesData } = await useAsyncData('venues-list', () =>
+  queryCollection('venues')
+    .select('slug', 'name', 'address', 'city', 'country', 'lat', 'lon', 'photos')
+    .all()
+);
+const { data: eventsData } = await useAsyncData('venues-events', () =>
+  queryCollection('events').select('venueSlug', 'date', 'city').all()
+);
 
 const yearsByVenue = computed(() => {
   const map = new Map<string, Set<string>>();

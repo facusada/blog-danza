@@ -37,7 +37,7 @@
           </p>
         </header>
         <div class="grid gap-6 md:grid-cols-2">
-          <CardProduction v-for="production in productionsList" :key="production._id" :production="production" />
+          <CardProduction v-for="production in productionsList" :key="production.slug" :production="production" />
         </div>
       </div>
     </section>
@@ -63,14 +63,24 @@
 
 <script setup lang="ts">
 const { data: eventsData } = await useAsyncData('home-events', () =>
-  queryContent('events').sort({ date: -1 }).limit(3).find()
+  queryCollection('events')
+    .select('title', 'slug', 'date', 'venueSlug', 'city', 'country', 'productionSlug', 'flyer', 'gallery')
+    .order('date', 'DESC')
+    .limit(3)
+    .all()
 );
 
 const { data: productionsData } = await useAsyncData('home-productions', () =>
-  queryContent('productions').sort({ year: -1 }).limit(2).find()
+  queryCollection('productions')
+    .select('title', 'slug', 'year', 'duration', 'synopsis', 'cover', 'tags')
+    .order('year', 'DESC')
+    .limit(2)
+    .all()
 );
 
-const { data: venuesData } = await useAsyncData('home-venues', () => queryContent('venues').find());
+const { data: venuesData } = await useAsyncData('home-venues', () =>
+  queryCollection('venues').select('slug', 'name').all()
+);
 
 const productionsList = computed(() => productionsData.value ?? []);
 

@@ -67,7 +67,7 @@ const route = useRoute();
 const slug = route.params.slug as string;
 
 const { data: production } = await useAsyncData(`production-${slug}`, () =>
-  queryContent('productions').where({ slug }).findOne()
+  queryCollection('productions').where('slug', '=', slug).first()
 );
 
 if (!production.value) {
@@ -75,10 +75,12 @@ if (!production.value) {
 }
 
 const { data: eventsData } = await useAsyncData(`production-events-${slug}`, () =>
-  queryContent('events').where({ productionSlug: slug }).sort({ date: 1 }).find()
+  queryCollection('events').where('productionSlug', '=', slug).order('date', 'ASC').all()
 );
 
-const { data: venuesData } = await useAsyncData('venues-map-detail', () => queryContent('venues').find());
+const { data: venuesData } = await useAsyncData('venues-map-detail', () =>
+  queryCollection('venues').select('slug', 'name').all()
+);
 const venuesMap = computed(() => {
   return (venuesData.value ?? []).reduce<Record<string, any>>((acc, venue) => {
     acc[venue.slug] = venue;
