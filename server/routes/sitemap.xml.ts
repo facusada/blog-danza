@@ -1,4 +1,4 @@
-import { queryCollection } from '@nuxt/content/server';
+import { serverQueryCollection } from '@nuxt/content/server';
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const baseRoutes = ['/', '/productions', '/events', '/venues', '/press', '/about', '/hire-us'];
 
   const getCollectionPaths = async (collection: 'productions' | 'events' | 'venues' | 'press') => {
-    const rows = await queryCollection(event, collection).select('path').all();
+    const rows = await serverQueryCollection(event, collection).select('path').all();
     return rows.map((row: { path?: string }) => row.path).filter(Boolean) as string[];
   };
 
