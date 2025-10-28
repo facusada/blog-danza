@@ -1,8 +1,8 @@
 ---
 title: Ausencias
-slug: Ausencias
+slug: ausencias
 date: 2025-10-14T00:00:00.000-03:00
-venueSlug: Slug
+venueSlug: coliseo-podesta
 city: La Plata
 country: Argentina
 productionSlug: aurora-fragmentada
