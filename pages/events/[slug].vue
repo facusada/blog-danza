@@ -47,6 +47,7 @@
 </template>
 
 <script setup lang="ts">
+const assetUrl = useAssetUrl();
 const route = useRoute();
 const slug = route.params.slug as string;
 
@@ -56,6 +57,14 @@ const { data: event } = await useAsyncData(`event-${slug}`, () =>
 
 if (!event.value) {
   throw createError({ statusCode: 404, statusMessage: 'Función no encontrada' });
+}
+
+event.value.flyer = event.value.flyer ? assetUrl(event.value.flyer) : undefined;
+if (event.value.gallery?.length) {
+  event.value.gallery = event.value.gallery.map((image) => ({
+    ...image,
+    src: assetUrl(image.src)
+  }));
 }
 
 const { data: venue } = await useAsyncData(`event-venue-${event.value.venueSlug}`, () =>

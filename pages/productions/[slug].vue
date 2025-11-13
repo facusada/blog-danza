@@ -63,6 +63,7 @@
 </template>
 
 <script setup lang="ts">
+const assetUrl = useAssetUrl();
 const route = useRoute();
 const slug = route.params.slug as string;
 
@@ -72,6 +73,14 @@ const { data: production } = await useAsyncData(`production-${slug}`, () =>
 
 if (!production.value) {
   throw createError({ statusCode: 404, statusMessage: 'Producción no encontrada' });
+}
+
+production.value.cover = assetUrl(production.value.cover);
+if (production.value.gallery?.length) {
+  production.value.gallery = production.value.gallery.map((image) => ({
+    ...image,
+    src: assetUrl(image.src)
+  }));
 }
 
 const { data: eventsData } = await useAsyncData(`production-events-${slug}`, () =>

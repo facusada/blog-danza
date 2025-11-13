@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-16 pb-16">
     <section class="relative overflow-hidden">
-      <img src="/charanda_2.jpg" alt="Intérpretes de la compañía en escena" class="absolute inset-0 h-full w-full object-cover" />
+      <img :src="heroImage" alt="Intérpretes de la compañía en escena" class="absolute inset-0 h-full w-full object-cover" />
       <div class="absolute inset-0 bg-gray-900/60"></div>
       <div class="relative mx-auto flex max-w-5xl flex-col gap-6 px-4 py-24 text-white sm:py-32">
         <span class="text-sm uppercase tracking-widest text-brand">Danza contemporánea</span>
@@ -62,6 +62,8 @@
 </template>
 
 <script setup lang="ts">
+const assetUrl = useAssetUrl();
+
 const { data: eventsData } = await useAsyncData('home-events', () =>
   queryCollection('events')
     .select('title', 'slug', 'date', 'venueSlug', 'city', 'country', 'productionSlug', 'flyer', 'gallery')
@@ -107,10 +109,12 @@ const eventsWithRelations = computed(() => {
 });
 
 const gallery = [
-  { src: '/gallery/danzacontempo.jpg', alt: 'Interpretes de la compañía saltando en sala histórica' },
-  { src: '/gallery/danzacontempo2.jpg', alt: 'Danza contemporánea con luces cálidas' },
-  { src: '/gallery/danzacontempo3.jpg', alt: 'Ensayo grupal con vestuario colorido' }
+  { src: assetUrl('/gallery/danzacontempo.jpg'), alt: 'Interpretes de la compañía saltando en sala histórica' },
+  { src: assetUrl('/gallery/danzacontempo2.jpg'), alt: 'Danza contemporánea con luces cálidas' },
+  { src: assetUrl('/gallery/danzacontempo3.jpg'), alt: 'Ensayo grupal con vestuario colorido' }
 ];
+
+const heroImage = assetUrl('/charanda_2.jpg');
 
 useSeo({
   title: 'Inicio',

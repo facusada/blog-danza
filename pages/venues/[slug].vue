@@ -31,6 +31,7 @@
 </template>
 
 <script setup lang="ts">
+const assetUrl = useAssetUrl();
 const route = useRoute();
 const slug = route.params.slug as string;
 
@@ -40,6 +41,13 @@ const { data: venue } = await useAsyncData(`venue-${slug}`, () =>
 
 if (!venue.value) {
   throw createError({ statusCode: 404, statusMessage: 'Espacio no encontrado' });
+}
+
+if (venue.value.photos?.length) {
+  venue.value.photos = venue.value.photos.map((photo) => ({
+    ...photo,
+    src: assetUrl(photo.src)
+  }));
 }
 
 const { data: eventsData } = await useAsyncData(`venue-events-${slug}`, () =>

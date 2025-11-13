@@ -2,7 +2,7 @@
   <article class="rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
     <NuxtLink :to="`/productions/${production.slug}`" class="flex flex-col h-full">
       <img
-        :src="production.cover"
+        :src="coverImage"
         :alt="`Portada de ${production.title}`"
         class="h-48 w-full rounded-t-xl object-cover"
         loading="lazy"
@@ -38,4 +38,8 @@ interface Production {
 }
 
 const props = defineProps<{ production: Production }>();
+
+const assetUrl = useAssetUrl();
+
+const coverImage = computed(() => assetUrl(props.production.cover));
 </script>

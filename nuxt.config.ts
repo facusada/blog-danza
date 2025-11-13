@@ -1,3 +1,10 @@
+const baseURL = process.env.NUXT_PUBLIC_BASE_URL || '/';
+const prefixStatic = (path: string) => {
+  const normalizedBase = baseURL.endsWith('/') ? baseURL.slice(0, -1) : baseURL;
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${normalizedBase}${normalizedPath}` || normalizedPath;
+};
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-10-28',
   experimental: {
@@ -6,7 +13,7 @@ export default defineNuxtConfig({
   modules: ['@nuxt/content', '@nuxtjs/tailwindcss'],
   css: ['~/styles/tailwind.css', 'maplibre-gl/dist/maplibre-gl.css'],
   app: {
-    baseURL: process.env.NUXT_PUBLIC_BASE_URL || '/',
+    baseURL,
     head: {
       htmlAttrs: {
         lang: 'es'
@@ -20,7 +27,7 @@ export default defineNuxtConfig({
         { name: 'twitter:card', content: 'summary_large_image' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/favicon.png' },
+        { rel: 'icon', type: 'image/png', href: prefixStatic('/favicon.png') },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' },
         {

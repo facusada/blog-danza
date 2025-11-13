@@ -39,6 +39,8 @@ interface EventCard {
 
 const props = defineProps<{ event: EventCard }>();
 
+const assetUrl = useAssetUrl();
+
 const formattedDate = computed(() => {
   try {
     return new Intl.DateTimeFormat('es-AR', { dateStyle: 'long' }).format(new Date(props.event.date));
@@ -48,10 +50,12 @@ const formattedDate = computed(() => {
 });
 
 const primaryImage = computed(() => {
-  if (props.event.flyer) {
-    return props.event.flyer;
+  const flyer = props.event.flyer;
+  if (flyer) {
+    return assetUrl(flyer);
   }
-  return props.event.gallery?.[0]?.src ?? '';
+  const galleryImage = props.event.gallery?.[0]?.src ?? '';
+  return galleryImage ? assetUrl(galleryImage) : '';
 });
 
 const primaryAlt = computed(() => {

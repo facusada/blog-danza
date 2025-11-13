@@ -58,11 +58,18 @@
 </template>
 
 <script setup lang="ts">
+const assetUrl = useAssetUrl();
+
 const { data: people } = await useAsyncData('people-list', () =>
   queryCollection('people').select('name', 'role', 'bio', 'photo', 'links').order('name', 'ASC').all()
 );
 
-const team = computed(() => people.value ?? []);
+const team = computed(() => {
+  return (people.value ?? []).map((person) => ({
+    ...person,
+    photo: person.photo ? assetUrl(person.photo) : undefined
+  }));
+});
 
 useSeo({
   title: 'Sobre la compañía',

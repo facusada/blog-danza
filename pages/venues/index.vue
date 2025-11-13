@@ -65,6 +65,8 @@
 </template>
 
 <script setup lang="ts">
+const assetUrl = useAssetUrl();
+
 const { data: venuesData } = await useAsyncData('venues-list', () =>
   queryCollection('venues')
     .select('slug', 'name', 'address', 'city', 'country', 'lat', 'lon', 'photos')
@@ -89,6 +91,16 @@ const yearsByVenue = computed(() => {
   return map;
 });
 
+const venuesWithAssets = computed(() =>
+  (venuesData.value ?? []).map((venue) => ({
+    ...venue,
+    photos: venue.photos?.map((photo) => ({
+      ...photo,
+      src: assetUrl(photo.src)
+    }))
+  }))
+);
+
 const {
   filters,
   years,
@@ -100,11 +112,11 @@ const {
   setPage,
   resetFilters
 } = useFilters({
-  items: () => venuesData.value ?? [],
+  items: () => venuesWithAssets.value ?? [],
   getYear: (item) => Array.from(yearsByVenue.value.get(item.slug) ?? []),
   getCity: (item) => item.city,
   getVenue: (item) => item.slug,
-  getVenueLabel: (slug) => venuesData.value?.find((venue) => venue.slug === slug)?.name ?? slug,
+  getVenueLabel: (slug) => venuesWithAssets.value?.find((venue) => venue.slug === slug)?.name ?? slug,
   searchIn: (item) => [item.name, item.address, item.city],
   pageSize: 4
 });
